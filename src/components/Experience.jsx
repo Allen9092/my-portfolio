@@ -11,7 +11,7 @@ export default function Experience() {
         {
             year: '2024',
             role: 'AI & Data Science Intern',
-            company: 'Tech Company',
+            company: 'Lysa Solutions Tech Company',
             description: 'Worked on ML models for predictive analytics and data pipeline optimization.'
         },
         {
