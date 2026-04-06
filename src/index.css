@@ -1,0 +1,14 @@
+@import "tailwindcss";
+html {
+  font-size: 18px;   /* base size */
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+html {
+  scroll-behavior: smooth;
+}
