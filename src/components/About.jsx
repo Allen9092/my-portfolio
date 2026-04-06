@@ -2,6 +2,8 @@ import { motion } from 'framer-motion'
 import { FaGraduationCap, FaBriefcase, FaMapMarkerAlt, FaEnvelope, FaPhoneAlt } from 'react-icons/fa'
 
 export default function About() {
+  const profileImage = '/profile-photo.jpg'
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -95,7 +97,7 @@ export default function About() {
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Left Column - Photo Placeholder */}
+          {/* Left Column - Profile Photo */}
           <motion.div
             variants={leftVariants}
             initial="hidden"
@@ -105,12 +107,12 @@ export default function About() {
           >
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-3xl blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-              <div className="relative w-full max-w-sm md:max-w-md aspect-[4/5] rounded-3xl border border-slate-800 bg-slate-900/50 overflow-hidden flex items-center justify-center">
-                {/* Empty placeholder for photo */}
-                <div className="text-slate-800 text-2xl font-medium uppercase tracking-[0.2em]">
-                  Photo
-                </div>
-                {/* Subtle overlay */}
+              <div className="relative w-full max-w-sm md:max-w-md aspect-[4/5] rounded-3xl border border-slate-800 bg-slate-900/50 overflow-hidden">
+                <img
+                  src={profileImage}
+                  alt="Allen J Wessley"
+                  className="w-full h-full object-cover object-top"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60"></div>
               </div>
             </div>
