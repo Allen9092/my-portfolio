@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: my-portfolio-backend
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        sync: false
+      - key: RECIPIENT_EMAIL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: MONGODB_URI
+        sync: false

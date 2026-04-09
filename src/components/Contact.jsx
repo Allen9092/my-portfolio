@@ -8,6 +8,7 @@ export default function Contact() {
     message: ''
   })
   const [status, setStatus] = useState('idle') // 'idle' | 'submitting' | 'success' | 'error'
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleChange = (e) => {
     setFormState({
@@ -16,31 +17,36 @@ export default function Contact() {
     })
   }
 
-  const encode = (data) =>
-    Object.keys(data)
-      .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
-      .join('&')
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setStatus('submitting')
+    setErrorMessage('')
 
-    fetch('/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: encode({ 'form-name': 'contact', ...formState }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Failed to send message')
-        }
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || ''
+    const contactUrl = backendUrl ? `${backendUrl}/api/contact` : '/api/contact'
 
-        setStatus('success')
-        setFormState({ name: '', email: '', message: '' })
+    try {
+      const response = await fetch(contactUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formState),
       })
-      .catch(() => setStatus('error'))
+
+      const data = await response.json().catch(() => ({}))
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send message')
+      }
+
+      setStatus('success')
+      setFormState({ name: '', email: '', message: '' })
+    } catch (error) {
+      console.error('Error:', error)
+      setErrorMessage(error.message || 'Something went wrong. Please try again.')
+      setStatus('error')
+    }
   }
 
   return (
@@ -63,7 +69,7 @@ export default function Contact() {
             Get In Touch
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            I'm currently looking for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!
+            I&apos;m currently looking for new opportunities. Whether you have a question or just want to say hi, I&apos;ll try my best to get back to you!
           </p>
         </motion.div>
 
@@ -79,7 +85,7 @@ export default function Contact() {
             <div className="group relative p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-500/30 transition-all duration-300 hover:bg-white/10">
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-purple-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               <div className="flex items-start gap-4">
-                <span className="text-3xl">📧</span>
+                <span className="text-3xl" aria-hidden="true">Email</span>
                 <div>
                   <h3 className="text-xl font-semibold text-white mb-2">Email</h3>
                   <a href="mailto:allenjwessley@gmail.com" className="text-gray-300 hover:text-cyan-400 transition-colors">
@@ -92,7 +98,7 @@ export default function Contact() {
             <div className="group relative p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-500/30 transition-all duration-300 hover:bg-white/10">
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-purple-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               <div className="flex items-start gap-4">
-                <span className="text-3xl">📍</span>
+                <span className="text-3xl" aria-hidden="true">Loc</span>
                 <div>
                   <h3 className="text-xl font-semibold text-white mb-2">Location</h3>
                   <p className="text-gray-300">Tamil Nadu, India</p>
@@ -103,7 +109,7 @@ export default function Contact() {
             <div className="group relative p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-500/30 transition-all duration-300 hover:bg-white/10">
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-purple-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               <div className="flex items-start gap-4">
-                <span className="text-3xl">🔗</span>
+                <span className="text-3xl" aria-hidden="true">Link</span>
                 <div>
                   <h3 className="text-xl font-semibold text-white mb-2">Connect</h3>
                   <a
@@ -129,14 +135,8 @@ export default function Contact() {
           >
             <form
               onSubmit={handleSubmit}
-              name="contact"
-              method="POST"
-              data-netlify="true"
-              data-netlify-honeypot="bot-field"
               className="p-8 rounded-2xl bg-black/30 backdrop-blur-xl border border-white/10 shadow-xl"
             >
-              <input type="hidden" name="form-name" value="contact" />
-              <p hidden><input name="bot-field" /></p>
               <div className="space-y-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-400 mb-2">Name</label>
@@ -179,12 +179,12 @@ export default function Contact() {
                 </div>
                 {status === 'success' && (
                   <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/30 text-green-400 text-center text-sm font-medium">
-                    ✅ Message sent! I'll get back to you soon.
+                    Message sent! I&apos;ll get back to you soon.
                   </div>
                 )}
                 {status === 'error' && (
                   <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-center text-sm font-medium">
-                    ❌ Something went wrong. Please try again or email me directly.
+                    {errorMessage || 'Something went wrong. Please try again or email me directly.'}
                   </div>
                 )}
                 <motion.button
